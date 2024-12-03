@@ -1,4 +1,6 @@
-<head><link rel="stylesheet" href="/stylesheets/style.css" /></head>
+<head>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
 <body>
   <%- include('../partials/_navbar') %>
   <h1>My Recipes</h1>
@@ -14,11 +16,7 @@
       <a href="/recipes/<%= recipe._id %>" class="recipe-link">
         <%= recipe.name %> (<%= recipe.ingredients.length %> ingredients)
       </a>
-      <form
-        action="/recipes/<%= recipe._id %>?_method=DELETE"
-        method="POST"
-        onsubmit="return confirm('Are you sure you want to delete this recipe?');"
-      >
+      <form action="/recipes/<%= recipe._id %>?_method=DELETE" method="POST">
         <button type="submit" class="delete-button">Delete</button>
       </form>
     </li>
