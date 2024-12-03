@@ -1,18 +1,35 @@
 <body>
-  <%- include('../partials/_navbar') %>
+  <%- include('../partials/_navbar') %> <% if (success) { %>
+  <p class="success-message"><%= success %></p>
+  <% } %> <% if (error) { %>
+  <p class="error-message"><%= error %></p>
+  <% } %>
+
   <h1>My Recipes</h1>
+
+  <a href="/recipes/new" class="btn btn-primary">Add New Recipe</a>
+
   <% if (recipes.length > 0) { %>
-  <ul>
+  <ul class="recipe-list">
     <% recipes.forEach(recipe => { %>
-    <li>
-      <a href="/recipes/<%= recipe._id %>"><%= recipe.name %></a>
-      <form action="/recipes/<%= recipe._id %>?_method=DELETE" method="POST">
-        <button type="submit">Delete</button>
+    <li class="recipe-item">
+      <a href="/recipes/<%= recipe._id %>" class="recipe-link">
+        <%= recipe.name %> (<%= recipe.ingredients.length %> ingredients)
+      </a>
+      <form
+        action="/recipes/<%= recipe._id %>?_method=DELETE"
+        method="POST"
+        class="delete-form"
+      >
+        <button type="submit" class="delete-button">Delete</button>
       </form>
     </li>
     <% }) %>
   </ul>
   <% } else { %>
-  <p>No recipes yet. <a href="/recipes/new">Add one</a>!</p>
+  <p class="no-recipes-message">
+    No recipes yet.
+    <a href="/recipes/new" class="add-recipe-link">Add one</a>!
+  </p>
   <% } %>
 </body>

@@ -1,4 +1,19 @@
 <body>
-  <%- include('./partials/_navbar') %>
+  <%- include('../partials/_navbar') %>
+  <h1>Recipes by <%= user.username %></h1>
 
+  <% if (error) { %>
+  <p class="error-message"><%= error %></p>
+  <% } %> <% if (recipes.length > 0) { %>
+  <ul>
+    <% recipes.forEach(recipe => { %>
+    <li>
+      <a href="/recipes/<%= recipe._id %>"> <%= recipe.name %> </a>
+      (<%= recipe.ingredients.length %> ingredients)
+    </li>
+    <% }) %>
+  </ul>
+  <% } else { %>
+  <p>This user hasn't created any recipes yet.</p>
+  <% } %>
 </body>

@@ -1,6 +1,14 @@
 <body>
   <%- include('../partials/_navbar') %>
+
+  <!-- Error Feedback -->
+  <% if (error) { %>
+  <p class="error-message"><%= error %></p>
+  <% } %>
+
   <h1>Add a New Ingredient</h1>
+
+  <!-- Form -->
   <form action="/ingredients" method="POST">
     <label for="name">Ingredient Name:</label>
     <input type="text" id="name" name="name" required />
