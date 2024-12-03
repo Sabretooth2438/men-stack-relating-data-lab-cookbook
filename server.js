@@ -1,50 +1,57 @@
-const dotenv = require('dotenv')
-dotenv.config()
+// Load environment variables
+const dotenv = require('dotenv');
+dotenv.config();
 
-const express = require('express')
-const passUsertoView = require('./middleware/pass-user-to-view')
-const app = express()
+// Import dependencies
+const express = require('express');
+const mongoose = require('mongoose');
+const methodOverride = require('method-override');
+const morgan = require('morgan');
+const session = require('express-session');
 
-const mongoose = require('mongoose')
-const methodOverride = require('method-override')
-const morgan = require('morgan')
-const session = require('express-session')
+// Import middleware
+const passUserToView = require('./middleware/pass-user-to-view');
+const isSignedIn = require('./middleware/is-signed-in');
 
-// Set the port from environment variable or default to 3000
-const PORT = process.env.PORT ? process.env.PORT : '3000'
+// Import controllers
+const authController = require('./controllers/auth');
+const recipesController = require('./controllers/recipes');
 
-mongoose.connect(process.env.MONGODB_URI)
+// Initialize Express app
+const app = express();
+
+// Configure environment variables
+const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI;
+const SESSION_SECRET = process.env.SESSION_SECRET;
+
+// Connect to MongoDB
+mongoose.connect(MONGODB_URI);
 mongoose.connection.on('connected', () => {
-  console.log(`Connected to MongoDB Database: ${mongoose.connection.name}.`)
-})
+  console.log(`Connected to MongoDB Database: ${mongoose.connection.name}.`);
+});
 
-// Middlewares
-app.use(express.urlencoded({ extended: false }))
-app.use(methodOverride('_method'))
-app.use(morgan('dev'))
+// Configure middlewares
+app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride('_method'));
+app.use(morgan('dev'));
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: SESSION_SECRET,
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
   })
-)
-app.use(passUsertoView)
+);
+app.use(passUserToView);
 
-// Require Controllers
-const authCtrl = require('./controllers/auth.js')
-const isSignedIn = require('./middleware/is-signed-in.js')
+// Configure routes
+app.get('/', (req, res) => {
+  res.render('index.ejs');
+});
+app.use('/auth', authController);
+app.use('/recipes', recipesController);
 
-// Root Route
-app.get('/', async (req, res) => {
-  res.render('index.ejs')
-})
-
-// Use Controller
-app.use('/auth', authCtrl)
-
-
-// Listen
+// Start server
 app.listen(PORT, () => {
-  console.log(`The express app is ready on port ${PORT}`)
-})
+  console.log(`The express app is running on port ${PORT}.`);
+});
