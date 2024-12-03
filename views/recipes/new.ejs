@@ -1,36 +1,39 @@
+<head>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
 <body>
   <%- include('../partials/_navbar') %>
   <h1>Create a New Recipe</h1>
 
   <form action="/recipes" method="POST">
-    <!-- Recipe Name -->
     <label for="name">Recipe Name:</label>
     <input type="text" id="name" name="name" required />
-    <br />
 
-    <!-- Instructions -->
     <label for="instructions">Instructions:</label>
-    <textarea id="instructions" name="instructions" required></textarea>
-    <br />
+    <textarea id="instructions" name="instructions"></textarea>
 
-    <!-- Ingredients -->
     <h2>Ingredients</h2>
-    <ul>
-      <% ingredients.forEach(ingredient => { %>
-      <li>
-        <label>
-          <input
-            type="checkbox"
-            name="ingredients"
-            value="<%= ingredient._id %>"
-          />
-          <%= ingredient.name %>
-        </label>
-      </li>
-      <% }) %>
-    </ul>
+    <div class="ingredients-scroll">
+      <ul>
+        <% ingredients.forEach(ingredient => { %>
+        <li>
+          <label>
+            <input
+              type="checkbox"
+              name="ingredients"
+              value="<%= ingredient._id %>"
+            />
+            <%= ingredient.name %>
+          </label>
+        </li>
+        <% }) %>
+      </ul>
+    </div>
 
-    <!-- Submit Button -->
+    <label for="newIngredient">Add New Ingredient:</label>
+    <input type="text" id="newIngredient" placeholder="New Ingredient" />
+    <button type="button" id="addIngredientBtn">Add Ingredient</button>
+
     <button type="submit">Create Recipe</button>
   </form>
 </body>

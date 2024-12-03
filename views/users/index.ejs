@@ -1,16 +1,19 @@
+<head>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
 <body>
   <%- include('../partials/_navbar') %>
   <h1>Explore Our Community</h1>
 
-  <% if (error) { %>
-  <p class="error-message"><%= error %></p>
-  <% } %>
-
-  <ul>
+  <% if (users.length > 0) { %>
+  <ul class="community-list">
     <% users.forEach(user => { %>
-    <li>
-      <a href="/users/<%= user._id %>"> <%= user.username %> </a>
+    <li class="community-item">
+      <a href="/users/<%= user._id %>"><%= user.username %></a>
     </li>
     <% }) %>
   </ul>
+  <% } else { %>
+  <p>No users found.</p>
+  <% } %>
 </body>

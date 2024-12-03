@@ -3,12 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cook Book</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <title>Cookbook</title>
   </head>
   <body>
-    <%- include('./partials/_navbar') %> <% if(user) {%>
-    <p>Hi <%= user.username %></p>
+    <%- include('./partials/_navbar') %> <% if (user) { %>
+    <p class="user-greeting">Welcome, <strong><%= user.username %></strong>!</p>
     <% } %>
-    <h1>Welcome to the App!</h1>
+
+    <main>
+      <h1>Welcome to the Cookbook App!</h1>
+      <p>Discover, create, and share your favorite recipes.</p>
+    </main>
   </body>
 </html>

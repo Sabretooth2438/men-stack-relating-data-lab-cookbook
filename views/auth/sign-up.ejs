@@ -1,23 +1,19 @@
-<body>
-  <%- include('./partials/_navbar') %>
+<head><link rel="stylesheet" href="/stylesheets/style.css" /></head>
+  <body>
+    <%- include('../partials/_navbar') %>
 
-  <h1>Create a new account</h1>
-  <form action="/auth/sign-up" method="POST">
-    <label>Username:</label>
-    <input type="text" name="username" id="username" />
+    <h1>Sign Up</h1>
+    <form action="/auth/sign-up" method="POST">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required />
 
-    <br />
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required />
 
-    <label>Password:</label>
-    <input type="password" name="password" id="password" />
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required />
 
-    <br />
-
-    <label>Confirm Password:</label>
-    <input type="password" name="confirmPassword" id="confirmPassword" />
-
-    <br />
-
-    <button type="submit">Sign Up</button>
-  </form>
-</body>
+      <button type="submit">Sign Up</button>
+    </form>
+  </body>
+</html>

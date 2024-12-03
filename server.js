@@ -46,6 +46,7 @@ app.use(
 )
 app.use(passUserToView)
 app.use(express.json())
+app.use(express.static('public'));
 
 // Configure routes
 app.get('/', (req, res) => {
