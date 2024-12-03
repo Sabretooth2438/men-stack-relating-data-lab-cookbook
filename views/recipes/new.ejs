@@ -1,13 +1,19 @@
 <body>
-  <%- include('../partials/_navbar') %>
-  <h1>Add a New Recipe</h1>
+  <h1>Create a New Recipe</h1>
   <form action="/recipes" method="POST">
     <label for="name">Recipe Name:</label>
-    <input type="text" id="name" name="name" required />
-    <br />
+    <input type="text" name="name" required /><br />
+
     <label for="instructions">Instructions:</label>
-    <textarea id="instructions" name="instructions"></textarea>
-    <br />
-    <button type="submit">Save Recipe</button>
+    <textarea name="instructions"></textarea><br />
+
+    <label for="ingredients">Ingredients:</label>
+    <select name="ingredients" multiple>
+      <% ingredients.forEach(ingredient => { %>
+      <option value="<%= ingredient._id %>"><%= ingredient.name %></option>
+      <% }) %></select
+    ><br />
+
+    <button type="submit">Create Recipe</button>
   </form>
 </body>

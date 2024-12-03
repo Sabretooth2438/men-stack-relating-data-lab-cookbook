@@ -1,4 +1,19 @@
 <body>
-  <%- include('./partials/_navbar') %>
-
+  <%- include('../partials/_navbar') %>
+  <h1>Ingredients</h1>
+  <ul>
+    <% ingredients.forEach(ingredient => { %>
+    <li>
+      <%= ingredient.name %>
+      <form
+        action="/ingredients/<%= ingredient._id %>?_method=DELETE"
+        method="POST"
+        style="display: inline"
+      >
+        <button type="submit">Delete</button>
+      </form>
+    </li>
+    <% }) %>
+  </ul>
+  <a href="/ingredients/new">Add New Ingredient</a>
 </body>

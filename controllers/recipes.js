@@ -1,12 +1,15 @@
 const express = require('express')
 const router = express.Router()
 const Recipe = require('../models/recipe')
+const Ingredient = require('../models/ingredient')
 const isSignedIn = require('../middleware/is-signed-in')
 
 // Show all recipes
 router.get('/', isSignedIn, async (req, res) => {
   try {
-    const recipes = await Recipe.find({ owner: req.session.user._id })
+    const recipes = await Recipe.find({ owner: req.session.user._id }).populate(
+      'ingredients'
+    )
     res.render('recipes/index.ejs', { recipes })
   } catch (err) {
     console.error('Error fetching recipes:', err)
@@ -15,19 +18,30 @@ router.get('/', isSignedIn, async (req, res) => {
 })
 
 // Render new recipe form
-router.get('/new', isSignedIn, (req, res) => {
-  res.render('recipes/new.ejs')
+router.get('/new', isSignedIn, async (req, res) => {
+  try {
+    const ingredients = await Ingredient.find()
+    res.render('recipes/new.ejs', { ingredients })
+  } catch (err) {
+    console.error('Error fetching ingredients:', err)
+    res.redirect('/recipes')
+  }
 })
 
 // Create a new recipe
 router.post('/', isSignedIn, async (req, res) => {
   try {
-    const newRecipe = new Recipe({ ...req.body, owner: req.session.user._id })
+    const { ingredients, ...recipeData } = req.body
+    const newRecipe = new Recipe({
+      ...recipeData,
+      ingredients: Array.isArray(ingredients) ? ingredients : [ingredients],
+      owner: req.session.user._id
+    })
     await newRecipe.save()
     res.redirect('/recipes')
   } catch (err) {
     console.error('Error creating recipe:', err)
-    res.redirect('/')
+    res.redirect('/recipes/new')
   }
 })
 
@@ -53,10 +67,11 @@ router.get('/:id/edit', isSignedIn, async (req, res) => {
       _id: req.params.id,
       owner: req.session.user._id
     })
+    const ingredients = await Ingredient.find()
     if (!recipe) throw new Error('Recipe not found')
-    res.render('recipes/edit.ejs', { recipe })
+    res.render('recipes/edit.ejs', { recipe, ingredients })
   } catch (err) {
-    console.error('Error fetching recipe for editing:', err)
+    console.error('Error fetching recipe or ingredients:', err)
     res.redirect('/recipes')
   }
 })
@@ -64,9 +79,13 @@ router.get('/:id/edit', isSignedIn, async (req, res) => {
 // Update a recipe
 router.put('/:id', isSignedIn, async (req, res) => {
   try {
+    const { ingredients, ...recipeData } = req.body
     const updatedRecipe = await Recipe.findOneAndUpdate(
       { _id: req.params.id, owner: req.session.user._id },
-      req.body,
+      {
+        ...recipeData,
+        ingredients: Array.isArray(ingredients) ? ingredients : [ingredients]
+      },
       { new: true }
     )
     if (!updatedRecipe) throw new Error('Recipe not found')

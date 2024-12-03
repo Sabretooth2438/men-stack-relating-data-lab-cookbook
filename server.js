@@ -14,8 +14,9 @@ const passUserToView = require('./middleware/pass-user-to-view');
 const isSignedIn = require('./middleware/is-signed-in');
 
 // Import controllers
-const authController = require('./controllers/auth');
-const recipesController = require('./controllers/recipes');
+const authCtrl = require('./controllers/auth');
+const recipesCtrl = require('./controllers/recipes');
+const ingredientsCtrl = require('./controllers/ingredients');
 
 // Initialize Express app
 const app = express();
@@ -32,9 +33,9 @@ mongoose.connection.on('connected', () => {
 });
 
 // Configure middlewares
-app.use(express.urlencoded({ extended: false }));
-app.use(methodOverride('_method'));
-app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: false })); // Parse form data
+app.use(methodOverride('_method')); // Override HTTP methods
+app.use(morgan('dev')); // Log HTTP requests
 app.use(
   session({
     secret: SESSION_SECRET,
@@ -42,14 +43,15 @@ app.use(
     saveUninitialized: true,
   })
 );
-app.use(passUserToView);
+app.use(passUserToView); // Pass user to views
 
 // Configure routes
 app.get('/', (req, res) => {
   res.render('index.ejs');
 });
-app.use('/auth', authController);
-app.use('/recipes', recipesController);
+app.use('/auth', authCtrl);
+app.use('/recipes', recipesCtrl);
+app.use('/ingredients', ingredientsCtrl);
 
 // Start server
 app.listen(PORT, () => {
