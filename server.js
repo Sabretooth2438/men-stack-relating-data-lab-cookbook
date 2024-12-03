@@ -1,33 +1,50 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const session = require('express-session');
-const MongoStore = require('connect-mongo');
-const methodOverride = require('method-override');
+const dotenv = require('dotenv')
+dotenv.config()
 
-const app = express();
+const express = require('express')
+const passUsertoView = require('./middleware/pass-user-to-view')
+const app = express()
 
-// Middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride('_method'));
+const mongoose = require('mongoose')
+const methodOverride = require('method-override')
+const morgan = require('morgan')
+const session = require('express-session')
 
-// Sessions
+// Set the port from environment variable or default to 3000
+const PORT = process.env.PORT ? process.env.PORT : '3000'
+
+mongoose.connect(process.env.MONGODB_URI)
+mongoose.connection.on('connected', () => {
+  console.log(`Connected to MongoDB Database: ${mongoose.connection.name}.`)
+})
+
+// Middlewares
+app.use(express.urlencoded({ extended: false }))
+app.use(methodOverride('_method'))
+app.use(morgan('dev'))
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
+    saveUninitialized: true
   })
-);
+)
+app.use(passUsertoView)
 
-app.set('view engine', 'ejs');
+// Require Controllers
+const authCtrl = require('./controllers/auth.js')
+const isSignedIn = require('./middleware/is-signed-in.js')
 
-// Routes
-app.use('/recipes', require('./controllers/recipes'));
-app.use('/ingredients', require('./controllers/ingredients'));
+// Root Route
+app.get('/', async (req, res) => {
+  res.render('index.ejs')
+})
 
-// Database connection
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+// Use Controller
+app.use('/auth', authCtrl)
 
-app.listen(process.env.PORT || 3000, () => console.log('Server running'));
+
+// Listen
+app.listen(PORT, () => {
+  console.log(`The express app is ready on port ${PORT}`)
+})

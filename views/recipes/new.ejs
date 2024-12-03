@@ -1,0 +1,13 @@
+<body>
+  <%- include('../partials/_navbar') %>
+  <h1>Add a New Recipe</h1>
+  <form action="/recipes" method="POST">
+    <label for="name">Recipe Name:</label>
+    <input type="text" id="name" name="name" required />
+    <br />
+    <label for="instructions">Instructions:</label>
+    <textarea id="instructions" name="instructions"></textarea>
+    <br />
+    <button type="submit">Save Recipe</button>
+  </form>
+</body>

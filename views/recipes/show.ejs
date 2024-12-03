@@ -1,0 +1,9 @@
+<body>
+  <%- include('../partials/_navbar') %>
+  <h1><%= recipe.name %></h1>
+  <p><%= recipe.instructions %></p>
+  <a href="/recipes/<%= recipe._id %>/edit">Edit Recipe</a>
+  <form action="/recipes/<%= recipe._id %>?_method=DELETE" method="POST">
+    <button type="submit">Delete Recipe</button>
+  </form>
+</body>
