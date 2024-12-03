@@ -1,11 +1,8 @@
 <body>
   <%- include('../partials/_navbar') %>
   <h1>Edit Recipe</h1>
-  <form
-    action="/recipes/<%= recipe._id %>?_method=PUT"
-    method="POST"
-    id="recipeForm"
-  >
+
+  <form action="/recipes/<%= recipe._id %>?_method=PUT" method="POST">
     <!-- Recipe Name -->
     <label for="name">Recipe Name:</label>
     <input
@@ -19,93 +16,26 @@
 
     <!-- Instructions -->
     <label for="instructions">Instructions:</label>
-    <textarea id="instructions" name="instructions">
+    <textarea id="instructions" name="instructions" required>
 <%= recipe.instructions %></textarea
     >
     <br />
 
     <!-- Ingredients -->
     <h2>Ingredients</h2>
-    <ul id="ingredients-list">
+    <ul>
       <% ingredients.forEach(ingredient => { %>
       <li>
         <label>
           <input type="checkbox" name="ingredients" value="<%= ingredient._id
-          %>" <%= recipe.ingredients.some(ing => ing.toString() ===
-          ingredient._id.toString()) ? 'checked' : '' %>> <%= ingredient.name %>
+          %>" <%= recipe.ingredients.some(rIng => rIng.equals(ingredient._id)) ?
+          'checked' : '' %> /> <%= ingredient.name %>
         </label>
       </li>
       <% }) %>
     </ul>
 
-    <!-- Add New Ingredient -->
-    <label for="newIngredient">Add New Ingredient:</label>
-    <input type="text" id="newIngredient" placeholder="New Ingredient" />
-    <button type="button" id="addIngredientBtn">Add Ingredient</button>
-    <br />
-
     <!-- Submit Button -->
-    <button type="submit">Save Changes</button>
+    <button type="submit">Update Recipe</button>
   </form>
-
-  <!-- JavaScript -->
-  <script>
-    document
-      .getElementById('addIngredientBtn')
-      .addEventListener('click', async () => {
-        const newIngredientInput = document.getElementById('newIngredient')
-        const ingredientName = newIngredientInput.value.trim()
-
-        if (ingredientName) {
-          try {
-            // Get selected ingredients
-            const selectedIngredients = Array.from(
-              document.querySelectorAll('input[name="ingredients"]:checked')
-            ).map((input) => input.value)
-
-            // Add the new ingredient
-            const response = await fetch('/ingredients', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name: ingredientName })
-            })
-
-            if (response.ok) {
-              // Fetch updated ingredients list
-              const updatedIngredients = await fetch('/ingredients/list')
-              const ingredients = await updatedIngredients.json()
-
-              // Rebuild the ingredient list
-              const ingredientsList =
-                document.getElementById('ingredients-list')
-              ingredientsList.innerHTML = ''
-              ingredients.forEach((ingredient) => {
-                const isChecked = selectedIngredients.includes(ingredient._id)
-                const listItem = document.createElement('li')
-                listItem.innerHTML = `
-                <label>
-                  <input type="checkbox" name="ingredients" value="${
-                    ingredient._id
-                  }" ${
-                  isChecked || ingredient.name === ingredientName
-                    ? 'checked'
-                    : ''
-                }>
-                  ${ingredient.name}
-                </label>
-              `
-                ingredientsList.appendChild(listItem)
-              })
-
-              // Clear input field
-              newIngredientInput.value = ''
-            } else {
-              console.error('Failed to add ingredient')
-            }
-          } catch (error) {
-            console.error('Error adding ingredient:', error)
-          }
-        }
-      })
-  </script>
 </body>

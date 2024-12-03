@@ -1,12 +1,8 @@
 <body>
-  <%- include('../partials/_navbar') %> <% if (success) { %>
-  <p class="success-message"><%= success %></p>
-  <% } %> <% if (error) { %>
-  <p class="error-message"><%= error %></p>
-  <% } %>
-
+  <%- include('../partials/_navbar') %>
   <h1>All Ingredients</h1>
 
+  <% if (ingredients.length > 0) { %>
   <ul>
     <% ingredients.forEach(ingredient => { %>
     <li>
@@ -21,6 +17,9 @@
     </li>
     <% }) %>
   </ul>
+  <% } else { %>
+  <p>No ingredients available. <a href="/ingredients/new">Add one</a>!</p>
+  <% } %>
 
   <a href="/ingredients/new">Add New Ingredient</a>
 </body>
