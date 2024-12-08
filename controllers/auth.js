@@ -10,7 +10,6 @@ router.get('/sign-up', (req, res) => {
 // Handle Sign-Up Form Submission
 router.post('/sign-up', async (req, res) => {
   try {
-    // Check if username already exists
     const userInDatabase = await User.findOne({ username: req.body.username });
     if (userInDatabase) {
       return res.render('auth/sign-up.ejs', { error: 'Username already taken.' });
